@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Embeds Creator</title>
+    <link rel="icon" type="image/x-icon" href="src/img/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: url('src/img/background.jpg') no-repeat center/cover fixed;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-white">
+    <!-- Header -->
+    <header class="bg-gray-900/80 py-4 shadow-md">
+        <div class="container mx-auto text-center">
+            <h1 class="text-2xl font-bold">Embeds Creator</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center px-4 py-8">
+        <div class="bg-gray-900/80 p-6 rounded-lg shadow-lg text-center max-w-md w-full">
+            <h2 class="text-xl font-semibold mb-4">Crie Embeds para o Discord</h2>
+            <p class="text-gray-300 mb-6">Personalize mensagens com webhooks de forma simples e rápida.</p>
+            <button id="open-modal-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors duration-300">
+                Criar Embed
+            </button>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="embed-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center px-4 transition-opacity duration-300">
+        <div class="bg-gray-900 p-6 rounded-lg max-w-md w-full shadow-lg">
+            <h3 class="text-lg font-bold mb-4 text-center">Novo Embed</h3>
+            <form id="embed-form" class="space-y-4">
+                <div>
+                    <label for="webhook-url" class="block text-sm font-medium text-gray-200">Webhook URL</label>
+                    <input type="url" id="webhook-url" required class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://discord.com/api/webhooks/...">
+                </div>
+                <div>
+                    <label for="embed-title" class="block text-sm font-medium text-gray-200">Título</label>
+                    <input type="text" id="embed-title" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Título do embed">
+                </div>
+                <div>
+                    <label for="embed-description" class="block text-sm font-medium text-gray-200">Descrição</label>
+                    <textarea id="embed-description" required rows="3" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descrição do embed"></textarea>
+                </div>
+                <div>
+                    <label for="embed-color" class="block text-sm font-medium text-gray-200">Cor</label>
+                    <input type="color" id="embed-color" value="#1e90ff" class="w-full h-10 bg-gray-800 rounded-lg cursor-pointer">
+                </div>
+                <div>
+                    <label for="thumbnail-url" class="block text-sm font-medium text-gray-200">Thumbnail URL (opcional)</label>
+                    <input type="url" id="thumbnail-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="URL da miniatura">
+                </div>
+                <div>
+                    <label for="image-url" class="block text-sm font-medium text-gray-200">Imagem (opcional)</label>
+                    <input type="url" id="image-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="URL da imagem">
+                </div>
+                <div>
+                    <label for="embed-footer" class="block text-sm font-medium text-gray-200">Rodapé (opcional)</label>
+                    <input type="text" id="embed-footer" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Texto do rodapé">
+                </div>
+                <button type="submit" class="w-full p-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors duration-300">Enviar</button>
+            </form>
+            <button id="close-modal-btn" class="w-full p-3 mt-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors duration-300">Fechar</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900/80 py-4 shadow-md text-center text-sm">
+        © 2025 Rede Gamer - Code Projects
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modal = document.getElementById('embed-modal');
+            const form = document.getElementById('embed-form');
+
+            // Abre o modal
+            openModalBtn.addEventListener('click', () => {
+                modal.classList.remove('hidden');
+            });
+
+            // Fecha o modal
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Envia o formulário
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const webhookUrl = document.getElementById('webhook-url').value;
+                const embedData = {
+                    embeds: [{
+                        title: document.getElementById('embed-title').value || undefined,
+                        description: document.getElementById('embed-description').value,
+                        color: parseInt(document.getElementById('embed-color').value.replace('#', ''), 16),
+                        thumbnail: document.getElementById('thumbnail-url').value ? { url: document.getElementById('thumbnail-url').value } : undefined,
+                        image: document.getElementById('image-url').value ? { url: document.getElementById('image-url').value } : undefined,
+                        footer: document.getElementById('embed-footer').value ? { text: document.getElementById('embed-footer').value } : undefined,
+                    }],
+                };
+
+                try {
+                    const response = await fetch(webhookUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(embedData),
+                    });
+
+                    if (response.ok) {
+                        alert('Embed enviado com sucesso!');
+                        form.reset();
+                        modal.classList.add('hidden');
+                    } else {
+                        alert('Erro ao enviar o embed. Verifique o webhook.');
+                    }
+                } catch (error) {
+                    alert('Erro ao enviar. Tente novamente.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
