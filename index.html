@@ -9,6 +9,58 @@
     <style>
         body {
             background: url('src/img/background.jpg') no-repeat center/cover fixed;
+            perspective: 1000px; /* Adiciona perspectiva para efeitos 3D */
+        }
+        /* Animação de entrada para o modal */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px) rotateX(10deg);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0) rotateX(0);
+                opacity: 1;
+            }
+        }
+        /* Animação de saída para o modal */
+        @keyframes slideOut {
+            from {
+                transform: translateY(0) rotateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-50px) rotateX(10deg);
+                opacity: 0;
+            }
+        }
+        .modal-content {
+            transform-style: preserve-3d; /* Habilita 3D no modal */
+            transition: all 0.3s ease-in-out;
+        }
+        .modal-open {
+            animation: slideIn 0.3s ease-out forwards;
+        }
+        .modal-close {
+            animation: slideOut 0.3s ease-in forwards;
+        }
+        /* Efeito 3D nos botões */
+        .btn-3d {
+            position: relative;
+            transform: translateZ(0);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-3d:hover {
+            transform: translateY(-2px) translateZ(10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+        /* Efeito de pulsação no botão principal */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .pulse:hover {
+            animation: pulse 1.5s infinite;
         }
     </style>
 </head>
@@ -16,16 +68,16 @@
     <!-- Header -->
     <header class="bg-gray-900/80 py-4 shadow-md">
         <div class="container mx-auto text-center">
-            <h1 class="text-2xl font-bold">Embeds Creator</h1>
+            <h1 class="text-2xl font-bold tracking-wide animate-fade-in">Embeds Creator</h1>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center px-4 py-8">
-        <div class="bg-gray-900/80 p-6 rounded-lg shadow-lg text-center max-w-md w-full">
-            <h2 class="text-xl font-semibold mb-4">Crie Embeds para o Discord</h2>
-            <p class="text-gray-300 mb-6">Personalize mensagens com webhooks de forma simples e rápida.</p>
-            <button id="open-modal-btn" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold transition-colors duration-300">
+        <div class="bg-gray-900/80 p-6 rounded-xl shadow-2xl text-center max-w-md w-full transform hover:scale-105 transition-transform duration-300">
+            <h2 class="text-xl font-semibold mb-4 animate-fade-in">Crie Embeds para o Discord</h2>
+            <p class="text-gray-300 mb-6 animate-fade-in delay-100">Personalize mensagens com webhooks de forma simples e rápida.</p>
+            <button id="open-modal-btn" class="btn-3d px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg font-semibold text-white transition-colors duration-300 pulse">
                 Criar Embed
             </button>
         </div>
@@ -33,40 +85,43 @@
 
     <!-- Modal -->
     <div id="embed-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center px-4 transition-opacity duration-300">
-        <div class="bg-gray-900 p-6 rounded-lg max-w-md w-full shadow-lg">
-            <h3 class="text-lg font-bold mb-4 text-center">Novo Embed</h3>
+        <div class="modal-content bg-gray-900 p-6 rounded-xl max-w-md w-full shadow-2xl border border-gray-700/50">
+            <h3 class="text-lg font-bold mb-4 text-center animate-fade-in">Novo Embed</h3>
             <form id="embed-form" class="space-y-4">
-                <div>
+                <div class="animate-fade-in delay-100">
                     <label for="webhook-url" class="block text-sm font-medium text-gray-200">Webhook URL</label>
-                    <input type="url" id="webhook-url" required class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="https://discord.com/api/webhooks/...">
+                    <input type="url" id="webhook-url" required class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="https://discord.com/api/webhooks/...">
                 </div>
-                <div>
+                <div class="animate-fade-in delay-200">
                     <label for="embed-title" class="block text-sm font-medium text-gray-200">Título</label>
-                    <input type="text" id="embed-title" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Título do embed">
+                    <input type="text" id="embed-title" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="Título do embed">
                 </div>
-                <div>
+                <div class="animate-fade-in delay-300">
                     <label for="embed-description" class="block text-sm font-medium text-gray-200">Descrição</label>
-                    <textarea id="embed-description" required rows="3" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Descrição do embed"></textarea>
+                    <textarea id="embed-description" required rows="3" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="Descrição do embed"></textarea>
                 </div>
-                <div>
+                <div class="animate-fade-in delay-400">
                     <label for="embed-color" class="block text-sm font-medium text-gray-200">Cor</label>
                     <input type="color" id="embed-color" value="#1e90ff" class="w-full h-10 bg-gray-800 rounded-lg cursor-pointer">
                 </div>
-                <div>
+                <div class="animate-fade-in delay-500">
                     <label for="thumbnail-url" class="block text-sm font-medium text-gray-200">Thumbnail URL (opcional)</label>
-                    <input type="url" id="thumbnail-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="URL da miniatura">
+                    <input type="url" id="thumbnail-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="URL da miniatura">
                 </div>
-                <div>
+                <div class="animate-fade-in delay-600">
                     <label for="image-url" class="block text-sm font-medium text-gray-200">Imagem (opcional)</label>
-                    <input type="url" id="image-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="URL da imagem">
+                    <input type="url" id="image-url" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="URL da imagem">
                 </div>
-                <div>
+                <div class="animate-fade-in delay-700">
                     <label for="embed-footer" class="block text-sm font-medium text-gray-200">Rodapé (opcional)</label>
-                    <input type="text" id="embed-footer" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Texto do rodapé">
+                    <input type="text" id="embed-footer" class="w-full p-2 bg-gray-800 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="Texto do rodapé">
                 </div>
-                <button type="submit" class="w-full p-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors duration-300">Enviar</button>
+                <!-- Botões lado a lado -->
+                <div class="flex gap-4 animate-fade-in delay-800">
+                    <button type="submit" class="btn-3d flex-1 p-3 bg-green-600 hover:bg-green-700 rounded-lg font-semibold transition-colors duration-300">Enviar</button>
+                    <button type="button" id="close-modal-btn" class="btn-3d flex-1 p-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors duration-300">Fechar</button>
+                </div>
             </form>
-            <button id="close-modal-btn" class="w-full p-3 mt-3 bg-red-600 hover:bg-red-700 rounded-lg font-semibold transition-colors duration-300">Fechar</button>
         </div>
     </div>
 
@@ -81,16 +136,21 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const modal = document.getElementById('embed-modal');
+            const modalContent = modal.querySelector('.modal-content');
             const form = document.getElementById('embed-form');
 
-            // Abre o modal
+            // Abre o modal com animação
             openModalBtn.addEventListener('click', () => {
                 modal.classList.remove('hidden');
+                modalContent.classList.remove('modal-close');
+                modalContent.classList.add('modal-open');
             });
 
-            // Fecha o modal
+            // Fecha o modal com animação
             closeModalBtn.addEventListener('click', () => {
-                modal.classList.add('hidden');
+                modalContent.classList.remove('modal-open');
+                modalContent.classList.add('modal-close');
+                setTimeout(() => modal.classList.add('hidden'), 300); // Aguarda a animação
             });
 
             // Envia o formulário
@@ -119,7 +179,9 @@
                     if (response.ok) {
                         alert('Embed enviado com sucesso!');
                         form.reset();
-                        modal.classList.add('hidden');
+                        modalContent.classList.remove('modal-open');
+                        modalContent.classList.add('modal-close');
+                        setTimeout(() => modal.classList.add('hidden'), 300);
                     } else {
                         alert('Erro ao enviar o embed. Verifique o webhook.');
                     }
