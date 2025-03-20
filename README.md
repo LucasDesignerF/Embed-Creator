@@ -1,6 +1,6 @@
 # Embeds Creator
 
-![Embeds Creator Banner](src/img/favicon.ico) <!-- Substitua por uma imagem real, se tiver -->
+![Embeds Creator Banner](src/img/banner.png) <!-- Substitua por uma imagem real, se tiver -->
 
 Crie embeds personalizados para o Discord de forma simples e rápida usando webhooks. Um projeto desenvolvido por **Lucas Fortes** para a **Code Projects** e **Rede Gamer**, com design moderno, animações 3D e uma interface intuitiva.
 
